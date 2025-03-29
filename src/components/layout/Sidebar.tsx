@@ -20,8 +20,8 @@ const NavItem = ({
       to={to}
       className={`flex items-center p-3 rounded-lg transition-colors ${
         active 
-        ? 'bg-puttery-600 text-white' 
-        : 'text-gray-600 hover:bg-puttery-100'
+        ? 'bg-greenery-600 text-white' 
+        : 'text-gray-600 hover:bg-greenery-100'
       }`}
     >
       <Icon size={20} className={`mr-3 ${active ? 'text-white' : 'text-gray-500'}`} />
@@ -46,7 +46,7 @@ const Sidebar = () => {
   return (
     <div className="w-64 h-screen bg-white shadow-md flex flex-col">
       <div className="p-5 border-b">
-        <h1 className="text-xl font-bold text-puttery-700">Puttery Barn</h1>
+        <h1 className="text-xl font-bold text-greenery-700">Puttery Barn</h1>
         <p className="text-sm text-gray-500">Restaurant Admin</p>
       </div>
       <div className="flex-1 overflow-y-auto p-4">
@@ -64,8 +64,8 @@ const Sidebar = () => {
       </div>
       <div className="p-4 border-t">
         <div className="flex items-center">
-          <div className="w-10 h-10 rounded-full bg-puttery-200 flex items-center justify-center">
-            <span className="font-medium text-puttery-700">AB</span>
+          <div className="w-10 h-10 rounded-full bg-greenery-200 flex items-center justify-center">
+            <span className="font-medium text-greenery-700">AB</span>
           </div>
           <div className="ml-3">
             <p className="font-medium text-gray-800">Admin User</p>

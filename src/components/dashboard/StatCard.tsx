@@ -26,7 +26,7 @@ const StatCard = ({
   return (
     <Card className={cn(
       "relative overflow-hidden",
-      gradient ? "bg-gradient-to-br from-puttery-600 to-puttery-700 text-white" : "bg-white",
+      gradient ? "bg-gradient-to-br from-greenery-600 to-greenery-700 text-white" : "bg-white",
       className
     )}>
       <div className="p-6">
@@ -34,7 +34,7 @@ const StatCard = ({
           <div>
             <p className={cn(
               "text-sm font-medium mb-1",
-              gradient ? "text-puttery-100" : "text-gray-500"
+              gradient ? "text-greenery-100" : "text-gray-500"
             )}>
               {title}
             </p>
@@ -45,7 +45,7 @@ const StatCard = ({
                 "mt-2 text-sm flex items-center",
                 isPositive ? (gradient ? "text-green-200" : "text-green-500") : "",
                 isNegative ? (gradient ? "text-red-200" : "text-red-500") : "",
-                !isPositive && !isNegative ? (gradient ? "text-puttery-100" : "text-gray-500") : ""
+                !isPositive && !isNegative ? (gradient ? "text-greenery-100" : "text-gray-500") : ""
               )}>
                 {isPositive && "▲ "}
                 {isNegative && "▼ "}
@@ -57,7 +57,7 @@ const StatCard = ({
           
           <div className={cn(
             "p-2 rounded-full",
-            gradient ? "bg-white bg-opacity-20" : "bg-puttery-100"
+            gradient ? "bg-white bg-opacity-20" : "bg-greenery-100"
           )}>
             {icon}
           </div>

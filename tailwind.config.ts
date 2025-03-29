@@ -63,26 +63,26 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				"puttery": {
-					50: "#f0f9ff",
-					100: "#e0f2fe",
-					200: "#bae6fd",
-					300: "#7dd3fc",
-					400: "#38bdf8",
-					500: "#0ea5e9",
-					600: "#0284c7",
-					700: "#0369a1",
-					800: "#075985",
-					900: "#0c4a6e"
+				"greenery": {
+					50: "#f0faf4",
+					100: "#e0f5e9",
+					200: "#c1e7d2",
+					300: "#92d2ae",
+					400: "#57b585",
+					500: "#3c9d6d",
+					600: "#2a7f56",
+					700: "#266749",
+					800: "#22523c",
+					900: "#1d4532"
 				},
-				"puttery-accent": {
-					100: "#fee2e2",
-					200: "#fecaca",
-					300: "#fca5a5",
-					400: "#f87171",
-					500: "#ef4444",
-					600: "#dc2626",
-					700: "#b91c1c"
+				"greenery-accent": {
+					100: "#fbfee2",
+					200: "#f7fcca",
+					300: "#eef8a5",
+					400: "#ddf171",
+					500: "#cde144",
+					600: "#bace26",
+					700: "#909e1c"
 				}
 			},
 			borderRadius: {
