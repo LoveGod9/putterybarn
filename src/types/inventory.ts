@@ -7,7 +7,7 @@ export interface InventoryItem {
   min_stock: number;
   unit: string;
   price: number;
-  status: "Critical" | "Low" | "OK";
+  status: string; // Changed from "Critical" | "Low" | "OK" to string
   created_at: string;
   updated_at: string;
 }
