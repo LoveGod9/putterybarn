@@ -9,6 +9,36 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      customers: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       inventory_items: {
         Row: {
           category: string
@@ -44,6 +74,151 @@ export type Database = {
           price?: number
           status?: string
           unit?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      reservation_history: {
+        Row: {
+          action: string
+          created_at: string
+          created_by: string | null
+          id: string
+          notes: string | null
+          reservation_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          reservation_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          reservation_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservation_history_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reservation_tables: {
+        Row: {
+          created_at: string
+          id: string
+          reservation_id: string
+          table_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          reservation_id: string
+          table_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          reservation_id?: string
+          table_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservation_tables_reservation_id_fkey"
+            columns: ["reservation_id"]
+            isOneToOne: false
+            referencedRelation: "reservations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reservation_tables_table_id_fkey"
+            columns: ["table_id"]
+            isOneToOne: false
+            referencedRelation: "restaurant_tables"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reservations: {
+        Row: {
+          created_at: string
+          customer_id: string
+          date: string
+          id: string
+          party_size: number
+          special_requests: string | null
+          status: string
+          time: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          customer_id: string
+          date: string
+          id?: string
+          party_size: number
+          special_requests?: string | null
+          status?: string
+          time: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string
+          date?: string
+          id?: string
+          party_size?: number
+          special_requests?: string | null
+          status?: string
+          time?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reservations_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      restaurant_tables: {
+        Row: {
+          capacity: number
+          created_at: string
+          id: string
+          section: string | null
+          status: string
+          table_number: number
+          updated_at: string
+        }
+        Insert: {
+          capacity: number
+          created_at?: string
+          id?: string
+          section?: string | null
+          status?: string
+          table_number: number
+          updated_at?: string
+        }
+        Update: {
+          capacity?: number
+          created_at?: string
+          id?: string
+          section?: string | null
+          status?: string
+          table_number?: number
           updated_at?: string
         }
         Relationships: []

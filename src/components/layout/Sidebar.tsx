@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, BarChart, Clipboard, Users, Settings, ChartPie } from 'lucide-react';
+import { Home, BarChart, Clipboard, Users, Settings, ChartPie, Calendar } from 'lucide-react';
 
 // NavItem component for sidebar navigation items
 const NavItem = ({ 
@@ -38,6 +38,7 @@ const Sidebar = () => {
     { path: '/', label: 'Dashboard', icon: Home },
     { path: '/analytics', label: 'Analytics', icon: BarChart },
     { path: '/inventory', label: 'Inventory', icon: Clipboard },
+    { path: '/reservations', label: 'Reservations', icon: Calendar },
     { path: '/menu', label: 'Menu', icon: ChartPie },
     { path: '/staff', label: 'Staff', icon: Users },
     { path: '/settings', label: 'Settings', icon: Settings },
