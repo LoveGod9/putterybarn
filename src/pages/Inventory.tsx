@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,20 +8,7 @@ import { Search, Plus } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import AddInventoryForm from '@/components/inventory/AddInventoryForm';
-
-// Define the inventory item interface
-interface InventoryItem {
-  id: string;
-  name: string;
-  category: string;
-  current_stock: number;
-  min_stock: number;
-  unit: string;
-  price: number;
-  status: "Critical" | "Low" | "OK";
-  created_at: string;
-  updated_at: string;
-}
+import { InventoryItem } from '@/types/inventory';
 
 const Inventory = () => {
   const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
@@ -32,7 +18,6 @@ const Inventory = () => {
   const [formOpen, setFormOpen] = useState(false);
   const { toast } = useToast();
 
-  // Fetch inventory items from Supabase
   const fetchInventoryItems = async () => {
     setLoading(true);
     try {
@@ -59,7 +44,6 @@ const Inventory = () => {
     fetchInventoryItems();
   }, []);
 
-  // Filter inventory items based on search term and active filter
   const filteredItems = inventoryItems.filter((item) => {
     const matchesSearch = 
       item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -72,14 +56,12 @@ const Inventory = () => {
     return matchesSearch;
   });
 
-  // Handle form submission success
   const handleFormSuccess = () => {
     fetchInventoryItems();
   };
 
-  // Get badge variant based on status
   const getBadgeVariant = (status: string) => {
-    if (status === "Critical") return { variant: "destructive", className: "bg-red-500" };
+    if (status === "Critical") return { variant: "destructive" as const, className: "bg-red-500" };
     if (status === "Low") return { variant: "outline" as const, className: "border-orange-400 text-orange-500" };
     return { variant: "secondary" as const, className: "bg-green-100 text-green-800 border-green-300" };
   };
@@ -98,7 +80,6 @@ const Inventory = () => {
           </Button>
         </div>
 
-        {/* Search and Filter */}
         <Card className="border-none shadow-sm">
           <CardContent className="p-4">
             <div className="flex flex-col sm:flex-row gap-4">
@@ -137,7 +118,6 @@ const Inventory = () => {
           </CardContent>
         </Card>
 
-        {/* Inventory Table */}
         <Card>
           <CardHeader>
             <CardTitle>Inventory Items</CardTitle>
