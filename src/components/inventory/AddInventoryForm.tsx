@@ -24,7 +24,6 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog';
-import { InventoryItemInsert } from '@/types/inventory';
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Item name is required" }),
@@ -75,7 +74,7 @@ const AddInventoryForm = ({ open, onOpenChange, onSuccess }: AddInventoryFormPro
         unit: data.unit,
         price: data.price,
         status: status
-      } as InventoryItemInsert);
+      });
       
       if (error) throw error;
       
