@@ -29,7 +29,7 @@ import { CalendarIcon, Clock, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { NewReservation, NewCustomer, RestaurantTable } from '@/types/reservation';
+import { NewReservation, NewCustomer } from '@/types/reservation';
 
 const timeSlots = [
   '11:00:00', '11:15:00', '11:30:00', '11:45:00',
