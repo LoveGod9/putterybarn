@@ -1,15 +1,33 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Search } from 'lucide-react';
+import { Search, Edit, Ban, Check } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormDescription,
+  FormMessage,
+} from '@/components/ui/form';
 
 // Sample menu data
-const menuItems = [
+const initialMenuItems = [
   { 
     id: 1, 
     name: 'Signature Burger', 
@@ -19,7 +37,8 @@ const menuItems = [
     profit: 11.14, 
     profitMargin: 65.6,
     sold: 145,
-    popularity: 85
+    popularity: 85,
+    disabled: false
   },
   { 
     id: 2, 
@@ -30,7 +49,8 @@ const menuItems = [
     profit: 6.14, 
     profitMargin: 61.5,
     sold: 120,
-    popularity: 75
+    popularity: 75,
+    disabled: false
   },
   { 
     id: 3, 
@@ -41,7 +61,8 @@ const menuItems = [
     profit: 9.00, 
     profitMargin: 69.3,
     sold: 98,
-    popularity: 65
+    popularity: 65,
+    disabled: false
   },
   { 
     id: 4, 
@@ -52,7 +73,8 @@ const menuItems = [
     profit: 8.00, 
     profitMargin: 72.8,
     sold: 75,
-    popularity: 60
+    popularity: 60,
+    disabled: false
   },
   { 
     id: 5, 
@@ -63,7 +85,8 @@ const menuItems = [
     profit: 8.74, 
     profitMargin: 67.3,
     sold: 68,
-    popularity: 55
+    popularity: 55,
+    disabled: false
   },
   { 
     id: 6, 
@@ -74,14 +97,121 @@ const menuItems = [
     profit: 15.24, 
     profitMargin: 61.0,
     sold: 60,
-    popularity: 50
+    popularity: 50,
+    disabled: false
   },
 ];
 
 // Categories
 const categories = ['All', 'Main Course', 'Sides', 'Beverages', 'Desserts', 'Starters'];
 
+interface MenuItem {
+  id: number; 
+  name: string; 
+  category: string; 
+  price: number; 
+  cost: number;
+  profit: number; 
+  profitMargin: number;
+  sold: number;
+  popularity: number;
+  disabled: boolean;
+}
+
 const Menu = () => {
+  const [menuItems, setMenuItems] = useState<MenuItem[]>(initialMenuItems);
+  const [activeCategory, setActiveCategory] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDisableDialogOpen, setIsDisableDialogOpen] = useState(false);
+  const [itemToToggle, setItemToToggle] = useState<MenuItem | null>(null);
+  const { toast } = useToast();
+
+  // Filtered menu items based on category and search
+  const filteredMenuItems = menuItems.filter(item => {
+    const matchesCategory = activeCategory === 'All' || item.category === activeCategory;
+    const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                         item.category.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  const handleCategoryChange = (category: string) => {
+    setActiveCategory(category);
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleEditClick = (item: MenuItem) => {
+    setEditingItem({...item});
+    setIsEditDialogOpen(true);
+  };
+
+  const handleEditSave = () => {
+    if (editingItem) {
+      // Calculate new profit and profit margin
+      const profit = editingItem.price - editingItem.cost;
+      const profitMargin = (profit / editingItem.price) * 100;
+      
+      const updatedItem = {
+        ...editingItem,
+        profit: parseFloat(profit.toFixed(2)),
+        profitMargin: parseFloat(profitMargin.toFixed(1))
+      };
+
+      // Update the menu items
+      setMenuItems(menuItems.map(item => 
+        item.id === updatedItem.id ? updatedItem : item
+      ));
+
+      toast({
+        title: "Item updated",
+        description: `${updatedItem.name} has been updated successfully.`
+      });
+
+      setIsEditDialogOpen(false);
+      setEditingItem(null);
+    }
+  };
+
+  const handleToggleDisable = (item: MenuItem) => {
+    setItemToToggle(item);
+    setIsDisableDialogOpen(true);
+  };
+
+  const confirmToggleDisable = () => {
+    if (itemToToggle) {
+      const updatedItems = menuItems.map(item => 
+        item.id === itemToToggle.id ? { ...item, disabled: !item.disabled } : item
+      );
+      
+      setMenuItems(updatedItems);
+      
+      toast({
+        title: itemToToggle.disabled ? "Item enabled" : "Item disabled",
+        description: `${itemToToggle.name} has been ${itemToToggle.disabled ? "enabled" : "disabled"}.`
+      });
+      
+      setIsDisableDialogOpen(false);
+      setItemToToggle(null);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, field: keyof MenuItem) => {
+    if (editingItem) {
+      const value = field === 'name' || field === 'category' 
+        ? e.target.value 
+        : parseFloat(e.target.value);
+      
+      setEditingItem({
+        ...editingItem,
+        [field]: value
+      });
+    }
+  };
+
   return (
     <Layout>
       <div className="space-y-6">
@@ -108,13 +238,16 @@ const Menu = () => {
                     <Input 
                       placeholder="Search menu items..." 
                       className="pl-10"
+                      value={searchQuery}
+                      onChange={handleSearchChange}
                     />
                   </div>
                   <div className="flex gap-2 overflow-x-auto pb-2">
                     {categories.map((category) => (
                       <Button 
                         key={category} 
-                        variant={category === 'All' ? "default" : "outline"}
+                        variant={category === activeCategory ? "default" : "outline"}
+                        onClick={() => handleCategoryChange(category)}
                       >
                         {category}
                       </Button>
@@ -144,8 +277,8 @@ const Menu = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {menuItems.map((item) => (
-                        <tr key={item.id} className="bg-white border-b">
+                      {filteredMenuItems.map((item) => (
+                        <tr key={item.id} className={`bg-white border-b ${item.disabled ? 'opacity-50' : ''}`}>
                           <td className="px-4 py-3 font-medium">{item.name}</td>
                           <td className="px-4 py-3">{item.category}</td>
                           <td className="px-4 py-3">${item.price.toFixed(2)}</td>
@@ -154,8 +287,32 @@ const Menu = () => {
                           <td className="px-4 py-3">{item.sold}</td>
                           <td className="px-4 py-3">
                             <div className="flex space-x-2">
-                              <Button variant="outline" size="sm">Edit</Button>
-                              <Button variant="outline" size="sm" className="text-red-600">Disable</Button>
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => handleEditClick(item)}
+                              >
+                                <Edit className="h-4 w-4 mr-1" />
+                                Edit
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className={item.disabled ? "text-green-600" : "text-red-600"}
+                                onClick={() => handleToggleDisable(item)}
+                              >
+                                {item.disabled ? (
+                                  <>
+                                    <Check className="h-4 w-4 mr-1" />
+                                    Enable
+                                  </>
+                                ) : (
+                                  <>
+                                    <Ban className="h-4 w-4 mr-1" />
+                                    Disable
+                                  </>
+                                )}
+                              </Button>
                             </div>
                           </td>
                         </tr>
@@ -178,6 +335,7 @@ const Menu = () => {
                 <CardContent>
                   <div className="space-y-4">
                     {[...menuItems]
+                      .filter(item => !item.disabled)
                       .sort((a, b) => b.profit - a.profit)
                       .slice(0, 5)
                       .map((item, index) => (
@@ -200,6 +358,7 @@ const Menu = () => {
                 <CardContent>
                   <div className="space-y-4">
                     {[...menuItems]
+                      .filter(item => !item.disabled)
                       .sort((a, b) => b.sold - a.sold)
                       .slice(0, 5)
                       .map((item, index) => (
@@ -256,6 +415,116 @@ const Menu = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Edit Menu Item Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Menu Item</DialogTitle>
+            <DialogDescription>
+              Make changes to the menu item. Click save when you're done.
+            </DialogDescription>
+          </DialogHeader>
+          
+          {editingItem && (
+            <div className="space-y-4 py-2">
+              <div className="grid grid-cols-1 gap-4">
+                <div className="space-y-2">
+                  <FormLabel htmlFor="name">Name</FormLabel>
+                  <Input
+                    id="name"
+                    value={editingItem.name}
+                    onChange={(e) => handleInputChange(e, 'name')}
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <FormLabel htmlFor="category">Category</FormLabel>
+                  <Input
+                    id="category"
+                    value={editingItem.category}
+                    onChange={(e) => handleInputChange(e, 'category')}
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <FormLabel htmlFor="price">Price ($)</FormLabel>
+                    <Input
+                      id="price"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={editingItem.price}
+                      onChange={(e) => handleInputChange(e, 'price')}
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <FormLabel htmlFor="cost">Cost ($)</FormLabel>
+                    <Input
+                      id="cost"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      value={editingItem.cost}
+                      onChange={(e) => handleInputChange(e, 'cost')}
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <FormLabel htmlFor="sold">Units Sold</FormLabel>
+                  <Input
+                    id="sold"
+                    type="number"
+                    min="0"
+                    value={editingItem.sold}
+                    onChange={(e) => handleInputChange(e, 'sold')}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleEditSave}>
+              Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Disable/Enable Confirmation Dialog */}
+      <Dialog open={isDisableDialogOpen} onOpenChange={setIsDisableDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {itemToToggle?.disabled ? 'Enable Menu Item' : 'Disable Menu Item'}
+            </DialogTitle>
+            <DialogDescription>
+              {itemToToggle?.disabled 
+                ? `Are you sure you want to enable ${itemToToggle?.name}? It will be visible to customers again.`
+                : `Are you sure you want to disable ${itemToToggle?.name}? It will be hidden from customers.`}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDisableDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={confirmToggleDisable}
+              variant={itemToToggle?.disabled ? "default" : "destructive"}
+            >
+              {itemToToggle?.disabled ? 'Enable' : 'Disable'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };
