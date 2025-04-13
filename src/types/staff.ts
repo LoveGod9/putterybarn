@@ -1,4 +1,5 @@
 
+// Define types for staff management
 export interface StaffMember {
   id: string;
   name: string;
