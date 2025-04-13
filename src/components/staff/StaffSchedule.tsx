@@ -1,8 +1,9 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { StaffWithSchedule } from '@/types/staff';
+import { StaffWithSchedule, WeekRange } from '@/types/staff';
+import { format, startOfWeek, endOfWeek, addWeeks, subWeeks } from 'date-fns';
 import { 
   Table, 
   TableBody, 
@@ -20,11 +21,42 @@ interface StaffScheduleProps {
 const StaffSchedule = ({ staff, onEdit }: StaffScheduleProps) => {
   const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
   
-  const getScheduleForDay = (staffMember: StaffWithSchedule, day: string) => {
-    if (!staffMember.schedules) return null;
-    return staffMember.schedules.find(schedule => schedule.day_of_week === day);
+  // State for tracking the current week
+  const [currentWeek, setCurrentWeek] = useState<WeekRange>({
+    startDate: startOfWeek(new Date(), { weekStartsOn: 1 }),
+    endDate: endOfWeek(new Date(), { weekStartsOn: 1 })
+  });
+  
+  // For formatting the week range display in the header
+  const formatWeekRange = (weekRange: WeekRange) => {
+    return `${format(weekRange.startDate, 'MMM d, yyyy')} - ${format(weekRange.endDate, 'MMM d, yyyy')}`;
   };
   
+  // Navigate to the previous week
+  const goToPreviousWeek = () => {
+    setCurrentWeek({
+      startDate: subWeeks(currentWeek.startDate, 1),
+      endDate: subWeeks(currentWeek.endDate, 1)
+    });
+  };
+  
+  // Navigate to the next week
+  const goToNextWeek = () => {
+    setCurrentWeek({
+      startDate: addWeeks(currentWeek.startDate, 1),
+      endDate: addWeeks(currentWeek.endDate, 1)
+    });
+  };
+  
+  // Get the schedule for a specific day
+  const getScheduleForDay = (staffMember: StaffWithSchedule, day: string) => {
+    if (!staffMember.schedules) return null;
+    return staffMember.schedules.find(schedule => 
+      schedule.day_of_week === day
+    );
+  };
+  
+  // Format the time display
   const formatTimeDisplay = (schedule: any) => {
     if (!schedule || (!schedule.start_time && !schedule.end_time)) return 'Off';
     if (schedule.start_time && schedule.end_time) {
@@ -33,6 +65,7 @@ const StaffSchedule = ({ staff, onEdit }: StaffScheduleProps) => {
     return 'Partial Schedule';
   };
   
+  // Format time from 24h to 12h format
   const formatTime = (timeString: string) => {
     if (!timeString) return '';
     try {
@@ -51,10 +84,22 @@ const StaffSchedule = ({ staff, onEdit }: StaffScheduleProps) => {
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle>Weekly Schedule</CardTitle>
+        <CardTitle>Weekly Schedule: {formatWeekRange(currentWeek)}</CardTitle>
         <div className="flex space-x-2">
-          <Button variant="outline" size="sm">Previous Week</Button>
-          <Button variant="outline" size="sm">Next Week</Button>
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={goToPreviousWeek}
+          >
+            Previous Week
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={goToNextWeek}
+          >
+            Next Week
+          </Button>
         </div>
       </CardHeader>
       <CardContent>
@@ -76,14 +121,14 @@ const StaffSchedule = ({ staff, onEdit }: StaffScheduleProps) => {
                     const schedule = getScheduleForDay(staffMember, day);
                     const displayText = formatTimeDisplay(schedule);
                     return (
-                      <TableCell key={day} className="relative">
+                      <TableCell key={day} className="relative group">
                         <span className={displayText === 'Off' ? "text-gray-400" : ""}>
                           {displayText}
                         </span>
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className="absolute top-2 right-2 opacity-0 hover:opacity-100 transition-opacity"
+                          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
                           onClick={() => onEdit(staffMember.id, day)}
                         >
                           Edit

@@ -47,7 +47,13 @@ const Staff = () => {
         
       if (staffError) throw staffError;
       
-      setStaffMembers(staffData || []);
+      // Type assertion to ensure compatibility with our defined types
+      const typedStaffData = staffData?.map(staff => ({
+        ...staff,
+        status: staff.status as 'Full-time' | 'Part-time'
+      })) || [];
+      
+      setStaffMembers(typedStaffData);
       
       // Fetch staff with their schedules
       const { data: staffWithSchedulesData, error: schedulesError } = await supabase
@@ -60,7 +66,22 @@ const Staff = () => {
         
       if (schedulesError) throw schedulesError;
       
-      setStaffWithSchedules(staffWithSchedulesData || []);
+      // Process the data to ensure it matches our types
+      const processedStaffWithSchedules = staffWithSchedulesData?.map(staff => {
+        // Transform schedules to match our defined types
+        const typedSchedules = staff.schedules?.map(schedule => ({
+          ...schedule,
+          day_of_week: schedule.day_of_week as 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
+        }));
+        
+        return {
+          ...staff,
+          status: staff.status as 'Full-time' | 'Part-time',
+          schedules: typedSchedules
+        };
+      }) || [];
+      
+      setStaffWithSchedules(processedStaffWithSchedules);
     } catch (error) {
       console.error('Error fetching staff data:', error);
       toast({
@@ -122,7 +143,7 @@ const Staff = () => {
                 />
                 
                 {/* Department Summary */}
-                <DepartmentSummary staffMembers={staffMembers} />
+                <DepartmentSummary staffMembers={staffWithSchedules} />
               </>
             )}
           </TabsContent>

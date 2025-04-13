@@ -85,9 +85,15 @@ const EditScheduleDialog = ({
     try {
       setLoading(true);
       
-      const scheduleData: Partial<StaffSchedule> = {
+      const validDayOfWeek = dayOfWeek as 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+      
+      if (!['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].includes(validDayOfWeek)) {
+        throw new Error(`Invalid day of week: ${dayOfWeek}`);
+      }
+      
+      const scheduleData = {
         staff_id: staffId,
-        day_of_week: dayOfWeek as any, // Type assertion as we're validating it elsewhere
+        day_of_week: validDayOfWeek,
         start_time: startTime || null,
         end_time: endTime || null
       };

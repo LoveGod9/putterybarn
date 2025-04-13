@@ -34,3 +34,9 @@ export interface StaffWithSchedule extends StaffMember {
   schedules?: StaffSchedule[];
   timeClocks?: TimeClock[];
 }
+
+// Add these interfaces for date handling
+export interface WeekRange {
+  startDate: Date;
+  endDate: Date;
+}
