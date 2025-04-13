@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -63,6 +62,7 @@ const AddStaffDialog = ({ onStaffAdded }: AddStaffDialogProps) => {
       // Convert monthly pay to hourly rate for the database
       const hourlyRate = values.monthly_pay / 160; // Assuming 160 hours per month
       
+      // Make sure to include all required fields based on the database schema
       const { error } = await staffSupabase
         .from('staff_members')
         .insert({
