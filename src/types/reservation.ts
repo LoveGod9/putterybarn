@@ -59,3 +59,47 @@ export interface NewCustomer {
   phone?: string;
   notes?: string;
 }
+
+// Add this type to declare our database schema for TypeScript
+export type Database = {
+  public: {
+    Tables: {
+      customers: {
+        Row: Customer;
+        Insert: NewCustomer;
+        Update: Partial<NewCustomer>;
+      };
+      reservations: {
+        Row: Reservation;
+        Insert: NewReservation;
+        Update: Partial<NewReservation>;
+      };
+      restaurant_tables: {
+        Row: RestaurantTable;
+        Insert: Omit<RestaurantTable, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<RestaurantTable, 'id' | 'created_at' | 'updated_at'>>;
+      };
+      reservation_history: {
+        Row: ReservationHistory;
+        Insert: Omit<ReservationHistory, 'id' | 'created_at'>;
+        Update: Partial<Omit<ReservationHistory, 'id' | 'created_at'>>;
+      };
+      reservation_tables: {
+        Row: {
+          id: string;
+          reservation_id: string;
+          table_id: string;
+          created_at: string;
+        };
+        Insert: {
+          reservation_id: string;
+          table_id: string;
+        };
+        Update: Partial<{
+          reservation_id: string;
+          table_id: string;
+        }>;
+      };
+    };
+  };
+};
