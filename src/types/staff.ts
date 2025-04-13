@@ -4,7 +4,7 @@ export interface StaffMember {
   name: string;
   position: string;
   department: string;
-  hourly_rate: number;
+  monthly_pay: number;
   status: 'Full-time' | 'Part-time';
   created_at?: string;
   updated_at?: string;

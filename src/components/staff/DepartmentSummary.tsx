@@ -13,11 +13,13 @@ const DepartmentSummary = ({ staffMembers }: DepartmentSummaryProps) => {
     if (!acc[staff.department]) {
       acc[staff.department] = {
         memberCount: 0,
-        totalHours: 0
+        totalHours: 0,
+        totalMonthlyPay: 0
       };
     }
     
     acc[staff.department].memberCount += 1;
+    acc[staff.department].totalMonthlyPay += staff.monthly_pay;
     
     // Calculate total scheduled hours from staff schedules if available
     if (staff.schedules && staff.schedules.length > 0) {
@@ -45,7 +47,7 @@ const DepartmentSummary = ({ staffMembers }: DepartmentSummaryProps) => {
     }
     
     return acc;
-  }, {} as Record<string, { memberCount: number, totalHours: number }>);
+  }, {} as Record<string, { memberCount: number, totalHours: number, totalMonthlyPay: number }>);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -55,14 +57,20 @@ const DepartmentSummary = ({ staffMembers }: DepartmentSummaryProps) => {
             <CardTitle className="text-sm font-medium text-gray-500">{department} Staff</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="text-2xl font-bold">{data.memberCount}</p>
-                <p className="text-sm text-gray-500">Members</p>
+            <div className="flex flex-col gap-4">
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="text-2xl font-bold">{data.memberCount}</p>
+                  <p className="text-sm text-gray-500">Members</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-bold">{data.totalHours.toFixed(1)}</p>
+                  <p className="text-sm text-gray-500">Hours this week</p>
+                </div>
               </div>
-              <div className="text-right">
-                <p className="text-2xl font-bold">{data.totalHours.toFixed(1)}</p>
-                <p className="text-sm text-gray-500">Hours this week</p>
+              <div className="pt-2 border-t">
+                <p className="text-sm text-gray-500">Total Monthly Pay</p>
+                <p className="text-2xl font-bold">${data.totalMonthlyPay.toLocaleString()}</p>
               </div>
             </div>
           </CardContent>

@@ -42,7 +42,7 @@ const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   position: z.string().min(2, { message: "Position is required." }),
   department: z.string().min(2, { message: "Department is required." }),
-  hourly_rate: z.coerce.number().positive({ message: "Hourly rate must be positive." }),
+  monthly_pay: z.coerce.number().positive({ message: "Monthly pay must be positive." }),
   status: z.enum(["Full-time", "Part-time"]),
 });
 
@@ -60,7 +60,7 @@ const EditStaffDialog = ({
       name: "",
       position: "",
       department: "",
-      hourly_rate: 0,
+      monthly_pay: 0,
       status: "Full-time" as const,
     },
   });
@@ -71,7 +71,7 @@ const EditStaffDialog = ({
         name: staff.name,
         position: staff.position,
         department: staff.department,
-        hourly_rate: staff.hourly_rate,
+        monthly_pay: staff.monthly_pay,
         status: staff.status,
       });
     }
@@ -171,14 +171,14 @@ const EditStaffDialog = ({
             
             <FormField
               control={form.control}
-              name="hourly_rate"
+              name="monthly_pay"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Hourly Rate ($)</FormLabel>
+                  <FormLabel>Monthly Pay ($)</FormLabel>
                   <FormControl>
                     <Input 
                       type="number" 
-                      step="0.01" 
+                      step="100" 
                       {...field} 
                     />
                   </FormControl>

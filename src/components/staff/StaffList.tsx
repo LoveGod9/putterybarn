@@ -111,7 +111,7 @@ const StaffList = ({ staffMembers, onDataChange, onEdit, onView }: StaffListProp
                 <TableHead>Name</TableHead>
                 <TableHead>Position</TableHead>
                 <TableHead>Department</TableHead>
-                <TableHead>Hourly Rate</TableHead>
+                <TableHead>Monthly Pay</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
@@ -122,7 +122,7 @@ const StaffList = ({ staffMembers, onDataChange, onEdit, onView }: StaffListProp
                   <TableCell className="font-medium">{staff.name}</TableCell>
                   <TableCell>{staff.position}</TableCell>
                   <TableCell>{staff.department}</TableCell>
-                  <TableCell>${staff.hourly_rate.toFixed(2)}</TableCell>
+                  <TableCell>${staff.monthly_pay.toLocaleString()}</TableCell>
                   <TableCell>
                     <Badge variant={staff.status === 'Full-time' ? "default" : "secondary"}>
                       {staff.status}
