@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { staffSupabase } from "@/integrations/supabase/staffClient";
 import { 
   Dialog, 
   DialogContent, 
@@ -45,7 +44,7 @@ const EditScheduleDialog = ({
     try {
       setLoading(true);
       
-      const { data, error } = await supabase
+      const { data, error } = await staffSupabase
         .from('staff_schedules')
         .select('*')
         .eq('staff_id', staffId)
@@ -85,15 +84,9 @@ const EditScheduleDialog = ({
     try {
       setLoading(true);
       
-      const validDayOfWeek = dayOfWeek as 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
-      
-      if (!['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].includes(validDayOfWeek)) {
-        throw new Error(`Invalid day of week: ${dayOfWeek}`);
-      }
-      
       const scheduleData = {
         staff_id: staffId,
-        day_of_week: validDayOfWeek,
+        day_of_week: dayOfWeek,
         start_time: startTime || null,
         end_time: endTime || null
       };
@@ -102,13 +95,13 @@ const EditScheduleDialog = ({
       
       if (scheduleId) {
         // Update existing schedule
-        result = await supabase
+        result = await staffSupabase
           .from('staff_schedules')
           .update(scheduleData)
           .eq('id', scheduleId);
       } else {
         // Create new schedule
-        result = await supabase
+        result = await staffSupabase
           .from('staff_schedules')
           .insert(scheduleData);
       }
@@ -142,7 +135,7 @@ const EditScheduleDialog = ({
       try {
         setLoading(true);
         
-        const { error } = await supabase
+        const { error } = await staffSupabase
           .from('staff_schedules')
           .update({
             start_time: null,

@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { staffSupabase } from "@/integrations/supabase/staffClient";
 import Layout from '@/components/layout/Layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { StaffMember, StaffWithSchedule } from '@/types/staff';
@@ -40,7 +39,7 @@ const Staff = () => {
       setLoading(true);
       
       // Fetch staff members
-      const { data: staffData, error: staffError } = await supabase
+      const { data: staffData, error: staffError } = await staffSupabase
         .from('staff_members')
         .select('*')
         .order('name');
@@ -48,13 +47,13 @@ const Staff = () => {
       if (staffError) throw staffError;
       
       // Transform the data to match our StaffMember type
-      const typedStaffData = staffData?.map(staff => ({
+      const typedStaffData: StaffMember[] = staffData?.map(staff => ({
         id: staff.id,
         name: staff.name,
         position: staff.position,
         department: staff.department,
         monthly_pay: staff.hourly_rate * 160, // Converting hourly rate to monthly pay (assuming 160 hours/month)
-        status: staff.status as 'Full-time' | 'Part-time',
+        status: staff.status,
         created_at: staff.created_at,
         updated_at: staff.updated_at
       })) || [];
@@ -62,7 +61,7 @@ const Staff = () => {
       setStaffMembers(typedStaffData);
       
       // Fetch staff with their schedules
-      const { data: staffWithSchedulesData, error: schedulesError } = await supabase
+      const { data: staffWithSchedulesData, error: schedulesError } = await staffSupabase
         .from('staff_members')
         .select(`
           *,
@@ -73,11 +72,11 @@ const Staff = () => {
       if (schedulesError) throw schedulesError;
       
       // Process the data to ensure it matches our types
-      const processedStaffWithSchedules = staffWithSchedulesData?.map(staff => {
+      const processedStaffWithSchedules: StaffWithSchedule[] = staffWithSchedulesData?.map(staff => {
         // Transform schedules to match our defined types
         const typedSchedules = staff.schedules?.map(schedule => ({
           ...schedule,
-          day_of_week: schedule.day_of_week as 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
+          day_of_week: schedule.day_of_week
         }));
         
         return {
@@ -86,7 +85,7 @@ const Staff = () => {
           position: staff.position,
           department: staff.department,
           monthly_pay: staff.hourly_rate * 160, // Converting hourly rate to monthly pay
-          status: staff.status as 'Full-time' | 'Part-time',
+          status: staff.status,
           created_at: staff.created_at,
           updated_at: staff.updated_at,
           schedules: typedSchedules

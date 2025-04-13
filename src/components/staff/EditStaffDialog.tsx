@@ -1,10 +1,9 @@
-
 import React, { useEffect } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { staffSupabase } from "@/integrations/supabase/staffClient";
 import { StaffMember } from '@/types/staff';
 import { 
   Dialog, 
@@ -72,7 +71,7 @@ const EditStaffDialog = ({
         position: staff.position,
         department: staff.department,
         monthly_pay: staff.monthly_pay,
-        status: staff.status,
+        status: staff.status as "Full-time" | "Part-time",
       });
     }
   }, [staff, form]);
@@ -84,7 +83,7 @@ const EditStaffDialog = ({
       // Convert monthly pay to hourly rate for database
       const hourlyRate = values.monthly_pay / 160; // Assuming 160 hours per month
       
-      const { error } = await supabase
+      const { error } = await staffSupabase
         .from('staff_members')
         .update({
           name: values.name,

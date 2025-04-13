@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { staffSupabase } from "@/integrations/supabase/staffClient";
 import { 
   Dialog, 
   DialogContent, 
@@ -63,7 +63,7 @@ const AddStaffDialog = ({ onStaffAdded }: AddStaffDialogProps) => {
       // Convert monthly pay to hourly rate for the database
       const hourlyRate = values.monthly_pay / 160; // Assuming 160 hours per month
       
-      const { error } = await supabase
+      const { error } = await staffSupabase
         .from('staff_members')
         .insert({
           name: values.name,

@@ -13,7 +13,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { supabase } from "@/integrations/supabase/client";
+import { staffSupabase } from "@/integrations/supabase/staffClient";
 
 interface StaffListProps {
   staffMembers: StaffMember[];
@@ -29,7 +29,7 @@ const StaffList = ({ staffMembers, onDataChange, onEdit, onView }: StaffListProp
     try {
       if (action === 'in') {
         // Check if there's an open time clock entry
-        const { data: existingEntry } = await supabase
+        const { data: existingEntry } = await staffSupabase
           .from('time_clock')
           .select('*')
           .eq('staff_id', staffId)
@@ -45,7 +45,7 @@ const StaffList = ({ staffMembers, onDataChange, onEdit, onView }: StaffListProp
           return;
         }
         
-        await supabase
+        await staffSupabase
           .from('time_clock')
           .insert({
             staff_id: staffId,
@@ -58,7 +58,7 @@ const StaffList = ({ staffMembers, onDataChange, onEdit, onView }: StaffListProp
         });
       } else {
         // Find the open time clock entry
-        const { data: openEntry } = await supabase
+        const { data: openEntry } = await staffSupabase
           .from('time_clock')
           .select('*')
           .eq('staff_id', staffId)
@@ -74,7 +74,7 @@ const StaffList = ({ staffMembers, onDataChange, onEdit, onView }: StaffListProp
           return;
         }
         
-        await supabase
+        await staffSupabase
           .from('time_clock')
           .update({
             clock_out: new Date().toISOString()
@@ -122,7 +122,7 @@ const StaffList = ({ staffMembers, onDataChange, onEdit, onView }: StaffListProp
                   <TableCell className="font-medium">{staff.name}</TableCell>
                   <TableCell>{staff.position}</TableCell>
                   <TableCell>{staff.department}</TableCell>
-                  <TableCell>${staff.monthly_pay.toLocaleString()}</TableCell>
+                  <TableCell>${staff.monthly_pay?.toLocaleString() || '0'}</TableCell>
                   <TableCell>
                     <Badge variant={staff.status === 'Full-time' ? "default" : "secondary"}>
                       {staff.status}

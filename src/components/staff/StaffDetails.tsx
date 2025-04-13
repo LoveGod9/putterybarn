@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { staffSupabase } from "@/integrations/supabase/staffClient";
 import { Badge } from "@/components/ui/badge";
 import { 
   Sheet, 
@@ -45,7 +45,7 @@ const StaffDetails = ({ open, onOpenChange, staff }: StaffDetailsProps) => {
     try {
       setLoading(true);
       
-      const { data, error } = await supabase
+      const { data, error } = await staffSupabase
         .from('time_clock')
         .select('*')
         .eq('staff_id', staff.id)
@@ -114,7 +114,7 @@ const StaffDetails = ({ open, onOpenChange, staff }: StaffDetailsProps) => {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Monthly Pay</p>
-                <p className="font-medium">${staff.monthly_pay.toFixed(2)}</p>
+                <p className="font-medium">${staff.monthly_pay?.toFixed(2) || '0.00'}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Started</p>
