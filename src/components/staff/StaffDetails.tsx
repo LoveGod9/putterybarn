@@ -113,8 +113,8 @@ const StaffDetails = ({ open, onOpenChange, staff }: StaffDetailsProps) => {
                 </Badge>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Hourly Rate</p>
-                <p className="font-medium">${staff.hourly_rate.toFixed(2)}</p>
+                <p className="text-sm text-gray-500">Monthly Pay</p>
+                <p className="font-medium">${staff.monthly_pay.toFixed(2)}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Started</p>

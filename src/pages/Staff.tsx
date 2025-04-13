@@ -47,10 +47,16 @@ const Staff = () => {
         
       if (staffError) throw staffError;
       
-      // Type assertion to ensure compatibility with our defined types
+      // Transform the data to match our StaffMember type
       const typedStaffData = staffData?.map(staff => ({
-        ...staff,
-        status: staff.status as 'Full-time' | 'Part-time'
+        id: staff.id,
+        name: staff.name,
+        position: staff.position,
+        department: staff.department,
+        monthly_pay: staff.hourly_rate * 160, // Converting hourly rate to monthly pay (assuming 160 hours/month)
+        status: staff.status as 'Full-time' | 'Part-time',
+        created_at: staff.created_at,
+        updated_at: staff.updated_at
       })) || [];
       
       setStaffMembers(typedStaffData);
@@ -75,8 +81,14 @@ const Staff = () => {
         }));
         
         return {
-          ...staff,
+          id: staff.id,
+          name: staff.name,
+          position: staff.position,
+          department: staff.department,
+          monthly_pay: staff.hourly_rate * 160, // Converting hourly rate to monthly pay
           status: staff.status as 'Full-time' | 'Part-time',
+          created_at: staff.created_at,
+          updated_at: staff.updated_at,
           schedules: typedSchedules
         };
       }) || [];

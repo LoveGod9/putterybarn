@@ -60,9 +60,18 @@ const AddStaffDialog = ({ onStaffAdded }: AddStaffDialogProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      // Convert monthly pay to hourly rate for the database
+      const hourlyRate = values.monthly_pay / 160; // Assuming 160 hours per month
+      
       const { error } = await supabase
         .from('staff_members')
-        .insert(values);
+        .insert({
+          name: values.name,
+          position: values.position,
+          department: values.department,
+          hourly_rate: hourlyRate,
+          status: values.status
+        });
       
       if (error) throw error;
       

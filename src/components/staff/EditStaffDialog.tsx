@@ -81,9 +81,18 @@ const EditStaffDialog = ({
     if (!staff) return;
     
     try {
+      // Convert monthly pay to hourly rate for database
+      const hourlyRate = values.monthly_pay / 160; // Assuming 160 hours per month
+      
       const { error } = await supabase
         .from('staff_members')
-        .update(values)
+        .update({
+          name: values.name,
+          position: values.position,
+          department: values.department,
+          hourly_rate: hourlyRate,
+          status: values.status
+        })
         .eq('id', staff.id);
       
       if (error) throw error;
