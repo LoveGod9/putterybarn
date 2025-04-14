@@ -1,22 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { useToast } from "@/hooks/use-toast";
-import { staffSupabase } from "@/integrations/supabase/staffClient";
+
+import React, { useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { StaffMember, StaffWithSchedule } from '@/types/staff';
-import StaffList from '@/components/staff/StaffList';
-import StaffSchedule from '@/components/staff/StaffSchedule';
-import DepartmentSummary from '@/components/staff/DepartmentSummary';
-import AddStaffDialog from '@/components/staff/AddStaffDialog';
+import { StaffMember } from '@/types/staff';
+import StaffHeader from '@/components/staff/StaffHeader';
+import StaffListTab from '@/components/staff/tabs/StaffListTab';
+import ScheduleTab from '@/components/staff/tabs/ScheduleTab';
 import EditStaffDialog from '@/components/staff/EditStaffDialog';
 import EditScheduleDialog from '@/components/staff/EditScheduleDialog';
 import StaffDetails from '@/components/staff/StaffDetails';
+import { useStaffData } from '@/components/staff/hooks/useStaffData';
 
 const Staff = () => {
-  const { toast } = useToast();
-  const [loading, setLoading] = useState(true);
-  const [staffMembers, setStaffMembers] = useState<StaffMember[]>([]);
-  const [staffWithSchedules, setStaffWithSchedules] = useState<StaffWithSchedule[]>([]);
+  // Custom hook for staff data and loading state
+  const { loading, staffMembers, staffWithSchedules, fetchStaffData } = useStaffData();
   
   // State for edit staff dialog
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -29,81 +26,6 @@ const Staff = () => {
   
   // State for staff details sheet
   const [detailsSheetOpen, setDetailsSheetOpen] = useState(false);
-  
-  useEffect(() => {
-    fetchStaffData();
-  }, []);
-  
-  const fetchStaffData = async () => {
-    try {
-      setLoading(true);
-      
-      // Fetch staff members
-      const { data: staffData, error: staffError } = await staffSupabase
-        .from('staff_members')
-        .select('*')
-        .order('name');
-        
-      if (staffError) throw staffError;
-      
-      // Transform the data to match our StaffMember type
-      const typedStaffData: StaffMember[] = staffData?.map(staff => ({
-        id: staff.id,
-        name: staff.name,
-        position: staff.position,
-        department: staff.department,
-        monthly_pay: staff.hourly_rate * 160, // Converting hourly rate to monthly pay (assuming 160 hours/month)
-        status: staff.status,
-        created_at: staff.created_at,
-        updated_at: staff.updated_at
-      })) || [];
-      
-      setStaffMembers(typedStaffData);
-      
-      // Fetch staff with their schedules
-      const { data: staffWithSchedulesData, error: schedulesError } = await staffSupabase
-        .from('staff_members')
-        .select(`
-          *,
-          schedules:staff_schedules(*)
-        `)
-        .order('name');
-        
-      if (schedulesError) throw schedulesError;
-      
-      // Process the data to ensure it matches our types
-      const processedStaffWithSchedules: StaffWithSchedule[] = staffWithSchedulesData?.map(staff => {
-        // Transform schedules to match our defined types
-        const typedSchedules = staff.schedules?.map(schedule => ({
-          ...schedule,
-          day_of_week: schedule.day_of_week
-        }));
-        
-        return {
-          id: staff.id,
-          name: staff.name,
-          position: staff.position,
-          department: staff.department,
-          monthly_pay: staff.hourly_rate * 160, // Converting hourly rate to monthly pay
-          status: staff.status,
-          created_at: staff.created_at,
-          updated_at: staff.updated_at,
-          schedules: typedSchedules
-        };
-      }) || [];
-      
-      setStaffWithSchedules(processedStaffWithSchedules);
-    } catch (error) {
-      console.error('Error fetching staff data:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load staff data. Please try again.",
-        variant: "destructive"
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
   
   const handleEditStaff = (staff: StaffMember) => {
     setSelectedStaff(staff);
@@ -124,13 +46,7 @@ const Staff = () => {
   return (
     <Layout>
       <div className="space-y-6">
-        <div className="flex justify-between items-start">
-          <div>
-            <h1 className="text-3xl font-bold">Staff Management</h1>
-            <p className="text-gray-500 mt-2">Manage staff schedules and performance</p>
-          </div>
-          <AddStaffDialog onStaffAdded={fetchStaffData} />
-        </div>
+        <StaffHeader onStaffAdded={fetchStaffData} />
         
         {/* Tabs for different views */}
         <Tabs defaultValue="staff">
@@ -140,35 +56,24 @@ const Staff = () => {
           </TabsList>
           
           {/* Staff List Tab */}
-          <TabsContent value="staff" className="space-y-4 mt-6">
-            {loading ? (
-              <p className="text-center py-8">Loading staff data...</p>
-            ) : (
-              <>
-                {/* Staff Members Table */}
-                <StaffList 
-                  staffMembers={staffMembers} 
-                  onDataChange={fetchStaffData}
-                  onEdit={handleEditStaff}
-                  onView={handleViewStaff}
-                />
-                
-                {/* Department Summary */}
-                <DepartmentSummary staffMembers={staffWithSchedules} />
-              </>
-            )}
+          <TabsContent value="staff">
+            <StaffListTab
+              loading={loading}
+              staffMembers={staffMembers}
+              staffWithSchedules={staffWithSchedules}
+              onDataChange={fetchStaffData}
+              onEdit={handleEditStaff}
+              onView={handleViewStaff}
+            />
           </TabsContent>
           
           {/* Schedule Tab */}
-          <TabsContent value="schedule" className="space-y-4 mt-6">
-            {loading ? (
-              <p className="text-center py-8">Loading schedule data...</p>
-            ) : (
-              <StaffSchedule 
-                staff={staffWithSchedules} 
-                onEdit={handleEditSchedule} 
-              />
-            )}
+          <TabsContent value="schedule">
+            <ScheduleTab
+              loading={loading}
+              staff={staffWithSchedules}
+              onEdit={handleEditSchedule}
+            />
           </TabsContent>
         </Tabs>
       </div>
