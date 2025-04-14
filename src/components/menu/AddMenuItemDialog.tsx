@@ -5,7 +5,6 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
-import { MenuItem } from '@/types/menu';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -14,52 +13,37 @@ const formSchema = z.object({
   category: z.string().min(1, "Category is required"),
   price: z.coerce.number().min(0, "Price must be at least 0"),
   cost: z.coerce.number().min(0, "Cost must be at least 0"),
-  sold: z.coerce.number().min(0, "Units sold must be at least 0"),
+  sold: z.coerce.number().min(0, "Units sold must be at least 0").default(0),
 });
 
 type FormData = z.infer<typeof formSchema>;
 
-interface EditMenuItemDialogProps {
+interface AddMenuItemDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  editingItem: MenuItem | null;
   onSave: (data: FormData) => Promise<void>;
 }
 
-const EditMenuItemDialog = ({
+const AddMenuItemDialog = ({
   isOpen,
   onOpenChange,
-  editingItem,
   onSave
-}: EditMenuItemDialogProps) => {
-  if (!editingItem) return null;
-
+}: AddMenuItemDialogProps) => {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: editingItem.name,
-      category: editingItem.category,
-      price: editingItem.price,
-      cost: editingItem.cost,
-      sold: editingItem.sold
+      name: "",
+      category: "",
+      price: 0,
+      cost: 0,
+      sold: 0
     }
   });
   
-  React.useEffect(() => {
-    if (editingItem && isOpen) {
-      form.reset({
-        name: editingItem.name,
-        category: editingItem.category,
-        price: editingItem.price,
-        cost: editingItem.cost,
-        sold: editingItem.sold
-      });
-    }
-  }, [editingItem, form, isOpen]);
-
   const handleSubmit = async (data: FormData) => {
     try {
       await onSave(data);
+      form.reset();
       onOpenChange(false);
     } catch (error) {
       console.error("Error saving menu item:", error);
@@ -70,9 +54,9 @@ const EditMenuItemDialog = ({
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Menu Item</DialogTitle>
+          <DialogTitle>Add New Menu Item</DialogTitle>
           <DialogDescription>
-            Make changes to the menu item. Click save when you're done.
+            Add a new item to your menu. Fill in all the details below.
           </DialogDescription>
         </DialogHeader>
         
@@ -170,7 +154,7 @@ const EditMenuItemDialog = ({
                   Cancel
                 </Button>
                 <Button type="submit">
-                  Save Changes
+                  Add Item
                 </Button>
               </DialogFooter>
             </form>
@@ -181,4 +165,4 @@ const EditMenuItemDialog = ({
   );
 };
 
-export default EditMenuItemDialog;
+export default AddMenuItemDialog;

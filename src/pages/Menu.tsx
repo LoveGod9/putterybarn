@@ -1,7 +1,9 @@
+
 import React, { useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
 import { MenuItem } from '@/types/menu';
 import MenuSearch from '@/components/menu/MenuSearch';
 import MenuItemsTable from '@/components/menu/MenuItemsTable';
@@ -10,95 +12,28 @@ import DisableMenuItemDialog from '@/components/menu/DisableMenuItemDialog';
 import ProfitableItemsCard from '@/components/menu/ProfitableItemsCard';
 import PopularItemsCard from '@/components/menu/PopularItemsCard';
 import OptimizationSuggestions from '@/components/menu/OptimizationSuggestions';
-
-// Sample menu data
-const initialMenuItems = [
-  { 
-    id: 1, 
-    name: 'Signature Burger', 
-    category: 'Main Course', 
-    price: 16.99, 
-    cost: 5.85,
-    profit: 11.14, 
-    profitMargin: 65.6,
-    sold: 145,
-    popularity: 85,
-    disabled: false
-  },
-  { 
-    id: 2, 
-    name: 'Truffle Fries', 
-    category: 'Sides', 
-    price: 9.99, 
-    cost: 3.85,
-    profit: 6.14, 
-    profitMargin: 61.5,
-    sold: 120,
-    popularity: 75,
-    disabled: false
-  },
-  { 
-    id: 3, 
-    name: 'Classic Mojito', 
-    category: 'Beverages', 
-    price: 12.99, 
-    cost: 3.99,
-    profit: 9.00, 
-    profitMargin: 69.3,
-    sold: 98,
-    popularity: 65,
-    disabled: false
-  },
-  { 
-    id: 4, 
-    name: 'Chocolate Lava Cake', 
-    category: 'Desserts', 
-    price: 10.99, 
-    cost: 2.99,
-    profit: 8.00, 
-    profitMargin: 72.8,
-    sold: 75,
-    popularity: 60,
-    disabled: false
-  },
-  { 
-    id: 5, 
-    name: 'Caesar Salad', 
-    category: 'Starters', 
-    price: 12.99, 
-    cost: 4.25,
-    profit: 8.74, 
-    profitMargin: 67.3,
-    sold: 68,
-    popularity: 55,
-    disabled: false
-  },
-  { 
-    id: 6, 
-    name: 'Grilled Salmon', 
-    category: 'Main Course', 
-    price: 24.99, 
-    cost: 9.75,
-    profit: 15.24, 
-    profitMargin: 61.0,
-    sold: 60,
-    popularity: 50,
-    disabled: false
-  },
-];
+import AddMenuItemDialog from '@/components/menu/AddMenuItemDialog';
+import { useMenuItems } from '@/hooks/useMenuItems';
 
 // Categories
 const categories = ['All', 'Main Course', 'Sides', 'Beverages', 'Desserts', 'Starters'];
 
 const Menu = () => {
-  const [menuItems, setMenuItems] = useState<MenuItem[]>(initialMenuItems);
+  const { 
+    menuItems, 
+    loading, 
+    addMenuItem, 
+    updateMenuItem, 
+    toggleDisableMenuItem 
+  } = useMenuItems();
+  
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isDisableDialogOpen, setIsDisableDialogOpen] = useState(false);
   const [itemToToggle, setItemToToggle] = useState<MenuItem | null>(null);
-  const { toast } = useToast();
 
   // Filtered menu items based on category and search
   const filteredMenuItems = menuItems.filter(item => {
@@ -121,31 +56,22 @@ const Menu = () => {
     setIsEditDialogOpen(true);
   };
 
-  const handleEditSave = () => {
+  const handleAddClick = () => {
+    setIsAddDialogOpen(true);
+  };
+
+  const handleEditSave = async (data: any) => {
     if (editingItem) {
-      // Calculate new profit and profit margin
-      const profit = editingItem.price - editingItem.cost;
-      const profitMargin = (profit / editingItem.price) * 100;
-      
-      const updatedItem = {
+      await updateMenuItem(editingItem.id, {
         ...editingItem,
-        profit: parseFloat(profit.toFixed(2)),
-        profitMargin: parseFloat(profitMargin.toFixed(1))
-      };
-
-      // Update the menu items
-      setMenuItems(menuItems.map(item => 
-        item.id === updatedItem.id ? updatedItem : item
-      ));
-
-      toast({
-        title: "Item updated",
-        description: `${updatedItem.name} has been updated successfully.`
+        ...data
       });
-
-      setIsEditDialogOpen(false);
       setEditingItem(null);
     }
+  };
+
+  const handleAddSave = async (data: any) => {
+    await addMenuItem(data);
   };
 
   const handleToggleDisable = (item: MenuItem) => {
@@ -153,43 +79,25 @@ const Menu = () => {
     setIsDisableDialogOpen(true);
   };
 
-  const confirmToggleDisable = () => {
+  const confirmToggleDisable = async () => {
     if (itemToToggle) {
-      const updatedItems = menuItems.map(item => 
-        item.id === itemToToggle.id ? { ...item, disabled: !item.disabled } : item
-      );
-      
-      setMenuItems(updatedItems);
-      
-      toast({
-        title: itemToToggle.disabled ? "Item enabled" : "Item disabled",
-        description: `${itemToToggle.name} has been ${itemToToggle.disabled ? "enabled" : "disabled"}.`
-      });
-      
+      await toggleDisableMenuItem(itemToToggle.id, itemToToggle.disabled);
       setIsDisableDialogOpen(false);
       setItemToToggle(null);
-    }
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, field: keyof MenuItem) => {
-    if (editingItem) {
-      const value = field === 'name' || field === 'category' 
-        ? e.target.value 
-        : parseFloat(e.target.value);
-      
-      setEditingItem({
-        ...editingItem,
-        [field]: value
-      });
     }
   };
 
   return (
     <Layout>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Menu Engineering</h1>
-          <p className="text-gray-500 mt-2">Analyze and optimize your menu performance</p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold">Menu Engineering</h1>
+            <p className="text-gray-500 mt-2">Analyze and optimize your menu performance</p>
+          </div>
+          <Button onClick={handleAddClick}>
+            <Plus className="mr-2 h-4 w-4" /> Add Menu Item
+          </Button>
         </div>
         
         {/* Tabs for different views */}
@@ -215,6 +123,7 @@ const Menu = () => {
               filteredMenuItems={filteredMenuItems}
               onEditClick={handleEditClick}
               onToggleDisable={handleToggleDisable}
+              loading={loading}
             />
           </TabsContent>
           
@@ -232,12 +141,18 @@ const Menu = () => {
         </Tabs>
       </div>
 
+      {/* Add Menu Item Dialog */}
+      <AddMenuItemDialog 
+        isOpen={isAddDialogOpen}
+        onOpenChange={setIsAddDialogOpen}
+        onSave={handleAddSave}
+      />
+
       {/* Edit Menu Item Dialog */}
       <EditMenuItemDialog 
         isOpen={isEditDialogOpen}
         onOpenChange={setIsEditDialogOpen}
         editingItem={editingItem}
-        onInputChange={handleInputChange}
         onSave={handleEditSave}
       />
 

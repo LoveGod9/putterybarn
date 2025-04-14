@@ -78,6 +78,51 @@ export type Database = {
         }
         Relationships: []
       }
+      menu_items: {
+        Row: {
+          category: string
+          cost: number
+          created_at: string
+          disabled: boolean
+          id: string
+          name: string
+          popularity: number
+          price: number
+          profit: number | null
+          profit_margin: number | null
+          sold: number
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          cost?: number
+          created_at?: string
+          disabled?: boolean
+          id?: string
+          name: string
+          popularity?: number
+          price?: number
+          profit?: number | null
+          profit_margin?: number | null
+          sold?: number
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          cost?: number
+          created_at?: string
+          disabled?: boolean
+          id?: string
+          name?: string
+          popularity?: number
+          price?: number
+          profit?: number | null
+          profit_margin?: number | null
+          sold?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       reservation_history: {
         Row: {
           action: string
