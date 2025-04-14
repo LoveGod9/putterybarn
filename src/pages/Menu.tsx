@@ -1,17 +1,17 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import Layout from '@/components/layout/Layout';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MenuItem } from '@/types/menu';
-import AddMenuItemDialog from '@/components/menu/AddMenuItemDialog';
-import EditMenuItemDialog from '@/components/menu/EditMenuItemDialog';
-import DisableMenuItemDialog from '@/components/menu/DisableMenuItemDialog';
 import MenuHeader from '@/components/menu/MenuHeader';
 import MenuItemsTab from '@/components/menu/MenuItemsTab';
 import MenuAnalysisTab from '@/components/menu/MenuAnalysisTab';
+import AddMenuItemDialog from '@/components/menu/AddMenuItemDialog';
+import EditMenuItemDialog from '@/components/menu/EditMenuItemDialog';
+import DisableMenuItemDialog from '@/components/menu/DisableMenuItemDialog';
 import { useMenuPage } from '@/hooks/useMenuPage';
 
 const Menu = () => {
+  const [activeTab, setActiveTab] = useState('items');
+  
   const {
     menuItems,
     filteredMenuItems,
@@ -24,7 +24,6 @@ const Menu = () => {
     isDisableDialogOpen,
     itemToToggle,
     categories,
-    
     handleCategoryChange,
     handleSearchChange,
     handleEditClick,
@@ -40,58 +39,48 @@ const Menu = () => {
 
   return (
     <Layout>
-      <div className="space-y-6">
-        <MenuHeader onAddClick={handleAddClick} />
-        
-        {/* Tabs for different views */}
-        <Tabs defaultValue="items">
-          <TabsList className="grid w-full max-w-md grid-cols-2">
-            <TabsTrigger value="items">Menu Items</TabsTrigger>
-            <TabsTrigger value="analysis">Profitability Analysis</TabsTrigger>
-          </TabsList>
-          
-          {/* Menu Items Tab */}
-          <TabsContent value="items">
-            <MenuItemsTab 
-              categories={categories}
-              activeCategory={activeCategory}
-              searchQuery={searchQuery}
-              filteredMenuItems={filteredMenuItems}
-              onCategoryChange={handleCategoryChange}
-              onSearchChange={handleSearchChange}
-              onEditClick={handleEditClick}
-              onToggleDisable={handleToggleDisable}
-              loading={loading}
-            />
-          </TabsContent>
-          
-          {/* Analysis Tab */}
-          <TabsContent value="analysis">
-            <MenuAnalysisTab menuItems={menuItems} />
-          </TabsContent>
-        </Tabs>
-      </div>
-
-      {/* Add Menu Item Dialog */}
-      <AddMenuItemDialog 
-        isOpen={isAddDialogOpen}
+      <MenuHeader 
+        onAddClick={handleAddClick} 
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
+      
+      {activeTab === 'items' ? (
+        <MenuItemsTab
+          categories={categories}
+          activeCategory={activeCategory}
+          searchQuery={searchQuery}
+          filteredMenuItems={filteredMenuItems}
+          onCategoryChange={handleCategoryChange}
+          onSearchChange={handleSearchChange}
+          onEditClick={handleEditClick}
+          onToggleDisable={handleToggleDisable}
+          loading={loading}
+        />
+      ) : (
+        <MenuAnalysisTab menuItems={menuItems} />
+      )}
+      
+      {/* Dialogs */}
+      <AddMenuItemDialog
+        open={isAddDialogOpen}
         onOpenChange={setIsAddDialogOpen}
         onSave={handleAddSave}
+        categories={categories.filter(cat => cat !== 'All')}
       />
-
-      {/* Edit Menu Item Dialog */}
-      <EditMenuItemDialog 
-        isOpen={isEditDialogOpen}
+      
+      <EditMenuItemDialog
+        open={isEditDialogOpen}
         onOpenChange={setIsEditDialogOpen}
-        editingItem={editingItem}
+        item={editingItem}
         onSave={handleEditSave}
+        categories={categories.filter(cat => cat !== 'All')}
       />
-
-      {/* Disable/Enable Confirmation Dialog */}
-      <DisableMenuItemDialog 
-        isOpen={isDisableDialogOpen}
+      
+      <DisableMenuItemDialog
+        open={isDisableDialogOpen}
         onOpenChange={setIsDisableDialogOpen}
-        itemToToggle={itemToToggle}
+        item={itemToToggle}
         onConfirm={confirmToggleDisable}
       />
     </Layout>

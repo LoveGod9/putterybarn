@@ -19,7 +19,7 @@ const MenuAnalysisTab = ({ menuItems }: MenuAnalysisTabProps) => {
       </div>
       
       {/* Menu Optimization Suggestions */}
-      <OptimizationSuggestions />
+      <OptimizationSuggestions menuItems={menuItems} />
     </div>
   );
 };
