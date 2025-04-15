@@ -63,24 +63,24 @@ const Menu = () => {
       
       {/* Dialogs */}
       <AddMenuItemDialog
-        open={isAddDialogOpen}
+        isOpen={isAddDialogOpen}
         onOpenChange={setIsAddDialogOpen}
         onSave={handleAddSave}
         categories={categories.filter(cat => cat !== 'All')}
       />
       
       <EditMenuItemDialog
-        open={isEditDialogOpen}
+        isOpen={isEditDialogOpen}
         onOpenChange={setIsEditDialogOpen}
-        item={editingItem}
+        editingItem={editingItem}
         onSave={handleEditSave}
         categories={categories.filter(cat => cat !== 'All')}
       />
       
       <DisableMenuItemDialog
-        open={isDisableDialogOpen}
+        isOpen={isDisableDialogOpen}
         onOpenChange={setIsDisableDialogOpen}
-        item={itemToToggle}
+        itemToToggle={itemToToggle}
         onConfirm={confirmToggleDisable}
       />
     </Layout>

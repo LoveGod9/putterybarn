@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -278,15 +277,6 @@ const Settings = () => {
         </Tabs>
       </div>
     </Layout>
-  );
-};
-
-// Badge component needed for Settings page but not imported above
-const Badge = ({ children, className }: { children: React.ReactNode; className?: string }) => {
-  return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${className}`}>
-      {children}
-    </span>
   );
 };
 

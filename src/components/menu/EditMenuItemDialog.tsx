@@ -24,13 +24,15 @@ interface EditMenuItemDialogProps {
   onOpenChange: (open: boolean) => void;
   editingItem: MenuItem | null;
   onSave: (data: FormData) => Promise<void>;
+  categories: string[];
 }
 
 const EditMenuItemDialog = ({
   isOpen,
   onOpenChange,
   editingItem,
-  onSave
+  onSave,
+  categories
 }: EditMenuItemDialogProps) => {
   if (!editingItem) return null;
 

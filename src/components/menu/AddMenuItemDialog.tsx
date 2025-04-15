@@ -22,12 +22,14 @@ interface AddMenuItemDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   onSave: (data: FormData) => Promise<void>;
+  categories: string[];
 }
 
 const AddMenuItemDialog = ({
   isOpen,
   onOpenChange,
-  onSave
+  onSave,
+  categories
 }: AddMenuItemDialogProps) => {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
