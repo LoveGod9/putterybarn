@@ -259,6 +259,7 @@ export type Database = {
           status: string
           table_number: number
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           capacity: number
@@ -268,6 +269,7 @@ export type Database = {
           status?: string
           table_number: number
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           capacity?: number
@@ -277,6 +279,7 @@ export type Database = {
           status?: string
           table_number?: number
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }

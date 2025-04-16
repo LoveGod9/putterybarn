@@ -47,9 +47,9 @@ const SecurityTab = () => {
               <Lock className="h-5 w-5 text-primary" />
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-medium">Reservation Security</h3>
+              <h3 className="text-lg font-medium">Table Security</h3>
               <p className="text-sm text-muted-foreground">
-                Users can only access reservation tables they've created
+                Users can only access restaurant tables they've created
               </p>
             </div>
             <Switch checked={true} disabled />
@@ -72,7 +72,7 @@ const SecurityTab = () => {
         <div className="bg-amber-50 border border-amber-200 rounded-md p-4">
           <h3 className="font-medium text-amber-800 mb-2">Important Note</h3>
           <p className="text-sm text-amber-700">
-            Your customer data and reservation tables are now protected with user-level access controls. Each staff member 
+            Your customer data, reservation tables, and restaurant tables are now protected with user-level access controls. Each staff member 
             can only view, edit, and manage records they've created. This ensures data privacy and security across your organization.
           </p>
         </div>
