@@ -170,18 +170,21 @@ export type Database = {
           id: string
           reservation_id: string
           table_id: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
           id?: string
           reservation_id: string
           table_id: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
           id?: string
           reservation_id?: string
           table_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
