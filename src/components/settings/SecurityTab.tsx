@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Shield, Users, Key, Lock } from 'lucide-react';
+import { Shield, Users, Key, Lock, Clock } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 
 const SecurityTab = () => {
@@ -55,6 +55,19 @@ const SecurityTab = () => {
             <Switch checked={true} disabled />
           </div>
           
+          <div className="flex items-center gap-4 pb-4 border-b">
+            <div className="bg-primary/10 p-2 rounded-full">
+              <Clock className="h-5 w-5 text-primary" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-medium">Time Clock Security</h3>
+              <p className="text-sm text-muted-foreground">
+                Staff time clock entries are secured with user-level access controls
+              </p>
+            </div>
+            <Switch checked={true} disabled />
+          </div>
+          
           <div className="flex items-center gap-4 pb-4">
             <div className="bg-primary/10 p-2 rounded-full">
               <Key className="h-5 w-5 text-primary" />
@@ -72,7 +85,7 @@ const SecurityTab = () => {
         <div className="bg-amber-50 border border-amber-200 rounded-md p-4">
           <h3 className="font-medium text-amber-800 mb-2">Important Note</h3>
           <p className="text-sm text-amber-700">
-            Your customer data, reservation tables, and restaurant tables are now protected with user-level access controls. Each staff member 
+            Your customer data, reservation tables, restaurant tables, and staff time clock records are now protected with user-level access controls. Each staff member 
             can only view, edit, and manage records they've created. This ensures data privacy and security across your organization.
           </p>
         </div>

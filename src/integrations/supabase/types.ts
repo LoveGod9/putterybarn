@@ -363,6 +363,7 @@ export type Database = {
           staff_id: string
           total_hours: number | null
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           clock_in?: string | null
@@ -372,6 +373,7 @@ export type Database = {
           staff_id: string
           total_hours?: number | null
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           clock_in?: string | null
@@ -381,6 +383,7 @@ export type Database = {
           staff_id?: string
           total_hours?: number | null
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: [
           {
