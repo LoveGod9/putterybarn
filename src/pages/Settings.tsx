@@ -6,6 +6,7 @@ import SettingsHeader from '@/components/settings/SettingsHeader';
 import GeneralTab from '@/components/settings/GeneralTab';
 import NotificationsTab from '@/components/settings/NotificationsTab';
 import IntegrationsTab from '@/components/settings/IntegrationsTab';
+import SecurityTab from '@/components/settings/SecurityTab';
 
 const Settings = () => {
   return (
@@ -17,9 +18,10 @@ const Settings = () => {
         />
         
         <Tabs defaultValue="general">
-          <TabsList className="grid w-full max-w-md grid-cols-3">
+          <TabsList className="grid w-full max-w-md grid-cols-4">
             <TabsTrigger value="general">General</TabsTrigger>
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
+            <TabsTrigger value="security">Security</TabsTrigger>
             <TabsTrigger value="integrations">Integrations</TabsTrigger>
           </TabsList>
           
@@ -29,6 +31,10 @@ const Settings = () => {
           
           <TabsContent value="notifications" className="space-y-6 mt-6">
             <NotificationsTab />
+          </TabsContent>
+          
+          <TabsContent value="security" className="space-y-6 mt-6">
+            <SecurityTab />
           </TabsContent>
           
           <TabsContent value="integrations" className="space-y-6 mt-6">

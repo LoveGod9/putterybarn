@@ -18,6 +18,7 @@ export type Database = {
           notes: string | null
           phone: string | null
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -27,6 +28,7 @@ export type Database = {
           notes?: string | null
           phone?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -36,6 +38,7 @@ export type Database = {
           notes?: string | null
           phone?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -131,6 +134,7 @@ export type Database = {
           id: string
           notes: string | null
           reservation_id: string
+          user_id: string | null
         }
         Insert: {
           action: string
@@ -139,6 +143,7 @@ export type Database = {
           id?: string
           notes?: string | null
           reservation_id: string
+          user_id?: string | null
         }
         Update: {
           action?: string
@@ -147,6 +152,7 @@ export type Database = {
           id?: string
           notes?: string | null
           reservation_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -205,6 +211,7 @@ export type Database = {
           status: string
           time: string
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -216,6 +223,7 @@ export type Database = {
           status?: string
           time: string
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -227,6 +235,7 @@ export type Database = {
           status?: string
           time?: string
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: [
           {
