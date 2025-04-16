@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
@@ -26,6 +27,10 @@ const StaffList = ({ staffMembers, onDataChange, onEdit, onView }: StaffListProp
 
   const handleClockInOut = async (staffId: string, action: 'in' | 'out') => {
     try {
+      // Get the current user's ID
+      const { data: { session } } = await staffSupabase.auth.getSession();
+      const userId = session?.user?.id;
+      
       if (action === 'in') {
         // Check if there's an open time clock entry
         const { data: existingEntry } = await staffSupabase
@@ -49,6 +54,7 @@ const StaffList = ({ staffMembers, onDataChange, onEdit, onView }: StaffListProp
           .insert({
             staff_id: staffId,
             clock_in: new Date().toISOString(),
+            user_id: userId // Add the user_id here
           });
           
         toast({
@@ -76,7 +82,8 @@ const StaffList = ({ staffMembers, onDataChange, onEdit, onView }: StaffListProp
         await staffSupabase
           .from('time_clock')
           .update({
-            clock_out: new Date().toISOString()
+            clock_out: new Date().toISOString(),
+            user_id: userId // Add the user_id here
           })
           .eq('id', openEntry.id);
           

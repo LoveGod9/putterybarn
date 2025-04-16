@@ -20,6 +20,10 @@ export const useAddStaffFormSubmit = ({ onSuccess, onClose }: UseAddStaffFormSub
       // Convert monthly pay to hourly rate for database
       const hourlyRate = values.monthly_pay / 160; // Assuming 160 hours per month
       
+      // Get the current user's ID
+      const { data: { session } } = await staffSupabase.auth.getSession();
+      const userId = session?.user?.id;
+      
       const { error } = await staffSupabase
         .from('staff_members')
         .insert({
@@ -27,7 +31,8 @@ export const useAddStaffFormSubmit = ({ onSuccess, onClose }: UseAddStaffFormSub
           position: values.position,
           department: values.department,
           hourly_rate: hourlyRate,
-          status: values.status
+          status: values.status,
+          user_id: userId // Add the user_id here
         });
       
       if (error) throw error;

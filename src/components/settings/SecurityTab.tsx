@@ -57,6 +57,19 @@ const SecurityTab = () => {
           
           <div className="flex items-center gap-4 pb-4 border-b">
             <div className="bg-primary/10 p-2 rounded-full">
+              <Users className="h-5 w-5 text-primary" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-medium">Staff Security</h3>
+              <p className="text-sm text-muted-foreground">
+                Staff records are protected with user-level access controls
+              </p>
+            </div>
+            <Switch checked={true} disabled />
+          </div>
+          
+          <div className="flex items-center gap-4 pb-4 border-b">
+            <div className="bg-primary/10 p-2 rounded-full">
               <Clock className="h-5 w-5 text-primary" />
             </div>
             <div className="flex-1">
@@ -85,7 +98,7 @@ const SecurityTab = () => {
         <div className="bg-amber-50 border border-amber-200 rounded-md p-4">
           <h3 className="font-medium text-amber-800 mb-2">Important Note</h3>
           <p className="text-sm text-amber-700">
-            Your customer data, reservation tables, restaurant tables, and staff time clock records are now protected with user-level access controls. Each staff member 
+            Your customer data, reservation tables, restaurant tables, staff records, and staff time clock records are now protected with user-level access controls. Each staff member 
             can only view, edit, and manage records they've created. This ensures data privacy and security across your organization.
           </p>
         </div>
